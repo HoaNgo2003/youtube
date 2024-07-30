@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { API_BASE_URL, config } from '../../../helpers/config'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-
+import logo from "../../../images/logo-2.webp"
 const AddVideoForm = () => {
   const navigate = useNavigate()
   const [videoData, setVideoData]= useState({})
@@ -30,15 +30,57 @@ const AddVideoForm = () => {
       
     })
     try {
-      console.log(videoData)
-      const data = await axios.post(`${API_BASE_URL}/video/create`,videoData, config)
-    console.log(data)
+       
+      const dataReq = {
+        link:"link 1",
+        image: "",
+        title: videoData.title,
+        description: videoData.description,
+        file:videoData.file,
+        categoryId: videoData.categoryId,
+      }
+       console.log(dataReq)
+      const data = await axios.post(`${API_BASE_URL}/video/create`,dataReq, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      )
+     
     toast.success("Create video success", {position:"top-center"})
     navigate('/admin/videolist')
     } catch (error) {
+      console.log(error)
       toast.error(error.response.data.error)
     }
     
+  }
+  const handleImageChange = (e)=>{
+    if(e.target.files){
+      const file = e.target.files[0]
+      let reader = new FileReader()
+      reader.onload = (e)=>{
+        setVideoData({
+          ...videoData, preImage: reader.result, file:file
+        })
+      }
+      console.log(videoData)
+      reader.readAsDataURL(file)
+    }
+  }
+  const handleVideoChange = (e) =>{
+    if(e.target.files[0]){
+      const file = e.target.files[0]
+      let reader = new FileReader()
+      reader.onload = (e)=>{
+        setVideoData({
+          ...videoData, preVideo: reader.result, video:file
+        })
+      }
+      console.log(videoData)
+      reader.readAsDataURL(file)
+    }
   }
   return (
     <div>
@@ -54,7 +96,8 @@ const AddVideoForm = () => {
         </div>
         <div className="add-row">
           <span>Ảnh đại diện</span>
-          <input name='image'  onChange={handleChange} type="text" placeholder='Image' />
+          <img src={videoData.preImage} alt="" style={{height:"200px", width:"200px", objectFit:"contain"}}/>
+          <input className='input-file' name='image'  onChange={handleImageChange} type="file" placeholder='Image' />
         </div>
         <div className="add-row">
           <span>Mô tả</span>
@@ -63,9 +106,11 @@ const AddVideoForm = () => {
         <div className="add-row">
           <span>Thể loại</span>
            <select  onChange={handleChange} name="categoryId" id="">
-            <option selected value="">---Choose---</option>
+            <option selected value="funny">---Choose---</option>
             {category && category.map((item, index)=><>
-              <option key={index} value={item.value}>{item.value}</option>
+              <option key={index} value={item.value}>{item.value}
+              </option>
+
             </>)}
            
             
@@ -73,7 +118,8 @@ const AddVideoForm = () => {
         </div>
         <div className="add-row">
           <span>Link video</span>
-          <input  onChange={handleChange} name='link' type="text" placeholder='Link video' />
+          <video src={videoData.preVideo} alt="" style={{height:"200px", width:"200px", objectFit:"contain"}}/>
+          <input className='input-file'  onChange={handleVideoChange} name='link' type="file" placeholder='Link video' />
         </div>
         <button onClick={handleSubmit}>Thêm video</button>
       </form>

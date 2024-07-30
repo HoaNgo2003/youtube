@@ -413,3 +413,9 @@ table{
   border-bottom: 1px solid #aeb5c0;
 }
 /* end static search */
+/* Add video */
+.add-row .input-file{
+  border: none!important;
+  outline: none;
+}
+/* end add video */

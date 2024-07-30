@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Post } from '@nestjs/common';
 import { CreateVideoDto } from './dto/video.create.dto';
 import { Video } from './entity/video.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,6 +19,8 @@ export class VideoService {
       throw new HttpException("Can not create video", HttpStatus.BAD_REQUEST)
     }
   }
+   
+
   async findAllVideo():Promise<any>{ 
     // const search = querydto.search;
     // const videos = await this.videoRespository.find({
@@ -69,5 +71,13 @@ export class VideoService {
     } catch (error) {
       throw new HttpException("Can not delete video", HttpStatus.BAD_REQUEST)
     }
+  }
+  async updateVideoLink(id: string, link: string):Promise<any>{
+    const videoId = new ObjectId(id);
+    const video = await this.findVideoById(id)
+    console.log(video)
+    const updateVideo = {...video, link:link}
+    console.log(videoId)
+    return await this.videoRespository.update(videoId, updateVideo);
   }
 }

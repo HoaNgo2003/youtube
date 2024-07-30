@@ -101,7 +101,7 @@ const VideoList = () => {
           {data &&
           data.map(item=><>
             <tr id-item={item.id}>
-            <td><img style={{width:"100px", height:"100px",objectFit:"cover"}} src={item.image} alt="" /></td>
+            <td><img style={{width:"100px", height:"100px",objectFit:"contain"}} src={`${API_BASE_URL}/${item.image}`} alt="" /></td>
           <td>{item.title}</td>
           <td>{item.description}</td>
           <td>{item.link}</td>

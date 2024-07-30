@@ -17,12 +17,11 @@ export class CreateVideoDto{
   description: string
 
   @ApiProperty()
-  @IsString()
   image: string
 
   @ApiProperty()
   @IsNotEmpty()
   categoryId: string
-
+   
   
 }
